@@ -1,6 +1,9 @@
 #!/usr/bin/python
 import logging
 
+class UnsupportedFileExtensionError(Exception):
+    pass
+
 logger = logging.Logger("logi")
 
 """
@@ -35,14 +38,18 @@ func()
 # even when an exception occurred
 
 
-def write_to_file():
+def write_to_file(path):
+    assert path, "path is empty"
+    if '.cli' in path:
+        raise UnsupportedFileExtensionError("cli files are not supported")
     try:
-        f = open("games/settings.txt", "w")
+        f = open(path, "w")
     except FileNotFoundError as err:
+        raise
         logger.error("File or directory not found")
         logger.exception(err)
     finally:
         print("end write")
 
-
-write_to_file()
+path = "games/settings.cli"
+write_to_file(path)
